@@ -22,101 +22,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 import jwt
 from django.conf import settings
 
-# Create your views here.
-@api_view(['POST'])
-def register(request):
-    data = request.data
-    # try:
-    user = User.objects.create_user(
-        first_name=data['name'],
-        username=data['email'],
-        email=data['email'],
-        password=data['password'])
-    token = AccessToken.for_user(user)
-    serializer = UserSerializer(user, many=False)
-    current_site= get_current_site(request).domain
-    relativeLink=reverse('verify-email')
-    
-    absurl ='http://'+current_site+relativeLink+"?token="+str(token)
-    email_body= 'Hi'+user.username+' Use link below to verify your email\n '+ absurl
-    data ={'email_body':email_body, 'email_subject':'Verify your email', 'email_to':user.email}
-    Utils.send_email(data)
 
-
-
-    return Response({
-        "user": serializer.data,
-        "Token": str(token)
-    })
-
-    # except:
-    #     message = {'message': 'User with this email already exists'}
-    #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET'])
-def verifyEmail(request):
-    token= request.GET.get('token')
-  
-    print('token='+token)
-    try:
-        payload = jwt.decode(jwt=token, key=settings.SECRET_KEY, algorithms=['HS256'])
-        print('payload 1 ' + str(payload))
-        user = User.objects.get(id=payload['user_id'])
-        if not user.is_verified:
-            user.is_verified=True
-            user.save()
-        
-        return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
-    except jwt.ExpiredSignatureError as e:
-        return Response({'error': 'Activations link expired'}, status=status.HTTP_400_BAD_REQUEST)
-    except jwt.exceptions.DecodeError as e:
-        return Response({'error': 'Invalid Token'}, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['POST'])
-def login(request):
-    try:
-        serializer = LoginSerializers(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        
-        token = AccessToken.for_user(user)
-        return Response({
-            'user': UserSerializer(user).data,
-            "Token": str(token),
-
-        })
-
-    except:
-        message = {'message': 'Unable to log in with provided credentials'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# @authentication_classes([TokenAuthentication])
-def getUserProfile(request):
-    try:
-        user = request.user
-        serializer = UserSerializer(user, many=False)
-        # token, created = Token.objects.get_or_create(user=user)
-        token = AccessToken.for_user(user)
-        return Response({
-        "user": serializer.data,
-        "Token":str(token)
-
-        })
-    except:
-        messages= {"message":"Invalid Token"}
-        return Response(messages ,status= status.HTTP_400_BAD_REQUEST)
-   
-
-@api_view(['GET'])
-@permission_classes([IsAdminUser])
-@authentication_classes([TokenAuthentication])
-def getUser(request):
-    user = User.objects.all()
-    serializer = UserSerializer(user, many=True)
-    return Response(serializer.data)
 
 
 @api_view(['GET', 'POST'])
@@ -124,20 +30,21 @@ def getUser(request):
 def getProducts(request):
     if request.method == 'GET':
         user=request.user
-
-        data=[]
-        products = Product.objects.all()
-        serializer = ProductSerializer(products, many=True)
-        for product in serializer.data:
-            fab_product= Favorite.objects.filter(user=user).filter(product_id=product['id'])
-           
-            if fab_product:
-                product['favorite']=fab_product[0].isFavorite
-            else:
-                product['favorite']=False
-            data.append(product)
-        return Response(data)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        if user:
+            data=[]
+            products = Product.objects.all()
+            serializer = ProductSerializer(products, many=True)
+            for product in serializer.data:
+                fab_product= Favorite.objects.filter(user=user).filter(product_id=product['id'])
+                
+                if fab_product:
+                    product['favorite']=fab_product[0].isFavorite
+                else:
+                    product['favorite']=False
+                data.append(product)
+            return Response(data)
+        else:
+          return Response({"message":"Not valid token"},status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated]) 
@@ -192,6 +99,7 @@ def productComments(request, id):
         comment= Comment.objects.filter(product=product)
         serializer= CommentSerializer(comment, many=True)
         return Response(serializer.data)
+        
 
         # for cate in serializer.data:
         #     catedata= Category.objects
