@@ -88,22 +88,43 @@ def categoryView(request):
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 
+# GetProductComments
 @api_view(['GET','POST'])
-
+@permission_classes([IsAuthenticated]) 
 def productComments(request, id):
     user= request.user
     product= Product.objects.get(pk=id) 
     
     if request.method=='GET':
         
-        comment= Comment.objects.filter(product=product)
-        serializer= CommentSerializer(comment, many=True)
-        return Response(serializer.data)
+        comments= Comment.objects.filter(product=product)
+        serializer= CommentSerializer(comments, many=True)
+        data=[]
+
+        # User like or dislike on comment Status
+
+        for comment in serializer.data:
+            productComment= Comment.objects.get(pk=comment['id'])
+            print(productComment)
+            try:      
+                if request.user in productComment.likes.user.all():
+                    comment['like']= True
+                    comment['dislike']=False
+                elif request.user in productComment.dislikes.user.all():
+                    comment['like']=False
+                    comment['dislike']=True
+                else:
+                    comment['like']=False
+                    comment['dislike']=False
+                data.append(comment)
+            except:
+                comment['like']=False
+                comment['dislike']=False
+                data.append(comment)
+
+        return Response(data)
         
 
-        # for cate in serializer.data:
-        #     catedata= Category.objects
-        return Response(category)
 
     if request.method=='POST':
         comment_data = request.data['data']
@@ -117,6 +138,7 @@ def productComments(request, id):
             comment= Comment.objects.create(user=user,comment=comment_data, rate=rate,product=product)
             messages={"message":"successfully created"}
         return Response(messages)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated]) 
