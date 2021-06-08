@@ -64,7 +64,9 @@ class Product(models.Model):
         avg=0
         if reviews['avarage'] is not None:
             avg=float(reviews['avarage'])
-        return avg
+
+        #For limited decimal place 
+        return round(avg,1)
 
     @property
     def no_of_reviews(self):
@@ -123,7 +125,6 @@ class Comment(models.Model):
     @property
     def get_total_likes(self):
         
-  
         likes=self.likes.user.count()
 
         getLikes=0
