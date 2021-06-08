@@ -38,5 +38,5 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
 
-        fields=['id','user','comment','rate','get_total_likes', 'get_total_dislikes']
+        fields=['id','user','comment','rate','get_total_likes', 'get_total_dislikes','whenpublished']
         depth=1
