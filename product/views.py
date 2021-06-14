@@ -132,7 +132,7 @@ def productComments(request, id):
                 if request.user in productComment.likes.user.all():
                     comment['like']= True
                     comment['dislike']=False
-                elif request.user in productComment.dislikes.user.all():
+                elif request.user in productdislike.user.all():
                     comment['like']=False
                     comment['dislike']=True
                 else:
@@ -169,28 +169,29 @@ def likeComment(request):
     comment_id=request.data['id']
     user = request.user
     comment= Comment.objects.get(id=comment_id)
+
     try:
-        like= Like.objects.filter(comment=comment)
+        like= Like.objects.filter(comment=comment).first()
         if like:
             print(comment)
-            if request.user in comment.likes.user.all():
-                comment.likes.user.remove(request.user)
+            if user in like.user.all():
+                like.user.remove(user)
                 mesage={"message":"Succesfully remove like"}
             
                
                 
             else:
-                comment.likes.user.add(request.user)
+                like.user.add(user)
                 mesage={"message":"Succesfully like"}
 
                 try:
-                    comment.dislikes.user.remove(request.user)
+                    comment.dislikes.user.remove(user)
                 except:
                     print('noting')
             return Response(mesage)
         else:
-            Like.objects.create(comment=comment)
-            comment.likes.user.add(request.user)
+            newLike=Like.objects.create(comment=comment)
+            newLike.user.add(user)
 
 
             return Response({"message":"new like created"})
@@ -206,17 +207,17 @@ def dislikedComment(request):
     user = request.user
     comment= Comment.objects.get(id=comment_id)
     try:
-        dislike= Dislike.objects.filter(comment=comment)
+        dislike= Dislike.objects.filter(comment=comment).first()
         if dislike:
             print(comment)
-            if request.user in comment.dislikes.user.all():
-                comment.dislikes.user.remove(request.user)
+            if request.user in dislike.user.all():
+                dislike.user.remove(request.user)
                 mesage={"message":"Succesfully remove dislike"}
             
                
                 
             else:
-                comment.dislikes.user.add(request.user)
+                dislike.user.add(request.user)
                 mesage={"message":"Succesfully dislike"}
 
                 try:
@@ -225,10 +226,8 @@ def dislikedComment(request):
                     print('noting')
             return Response(mesage)
         else:
-            Dislike.objects.create(comment=comment)
-            comment.dislikes.user.add(request.user)
-
-
+            dis=Dislike.objects.create(comment=comment)
+            dis.user.add(request.user)
             return Response({"message":"new dislike created"})
     except Like.DoesNotExist:
         return Response({'error':'dislike does not exist'})
