@@ -35,13 +35,25 @@ def getProducts(request):
             products = Product.objects.all()
             serializer = ProductSerializer(products, many=True)
             for product in serializer.data:
-                fab_product= Favorite.objects.filter(user=user).filter(product_id=product['id'])
+                singleProduct= Product.objects.get(pk=product['id'])
                 
-                if fab_product:
-                    product['favorite']=fab_product[0].isFavorite
-                else:
-                    product['favorite']=False
-                data.append(product)
+                
+                try:
+                    print('try')
+                    if request.user in singleProduct.favorite.user.all():
+                        product['favorite']=True
+                        print('if')
+                    else:
+                        print('else')
+                        product['favorite']=False
+                    data.append(product)
+
+                except:
+                     print('except')
+                     product['favorite']=False
+                     data.append(product)
+            
+                
             return Response(data)
         else:
           return Response({"message":"Not valid token"},status=status.HTTP_400_BAD_REQUEST)
@@ -51,23 +63,33 @@ def getProducts(request):
 def addFavorite(request):
     user= request.user
     data = request.data['id']
-    
-    try:
-        product= Product.objects.get(id=data)
-        
-        single_favorite_product= Favorite.objects.filter(user=user).filter(product=product).first()
-        if single_favorite_product:
-            isFav= single_favorite_product.isFavorite
-            single_favorite_product.isFavorite = not isFav
-            single_favorite_product.save()
-        else:
-            Favorite.objects.create(user=user, product=product, isFavorite=True)
-        response_msg={'succes':'True'}
 
-    except:
-        response_msg= {'succes':'False'}
     
-    return Response(response_msg)
+# try:
+    product= Product.objects.get(id=data)
+    
+    single_favorite_product= Favorite.objects.filter(product=product).first()
+
+    if single_favorite_product:
+        if user in single_favorite_product.user.all():
+            single_favorite_product.user.remove(user)
+            message= {'message':'Remove from favorite list'}
+        else:
+            single_favorite_product.user.add(request.user)
+            message= {'message':'succesfuly added to favorite list'}
+
+    else:
+        prr=Favorite.objects.create(product=product)
+        prr.user.add(user)
+
+        message={'message':'Succesfully create Favorite of product'}
+        
+    return Response(message)
+
+# except:
+#     message= {'succes':'False'}
+
+       
 
 
 

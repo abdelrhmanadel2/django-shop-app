@@ -37,12 +37,28 @@ class ProductAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display=['product', 'user','comment','rate']
 
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display=['product','no_of_users']
+
+    def no_of_users(self, obj):
+        return obj.user.count()
+
+class LikeAdmin(admin.ModelAdmin):
+    list_display=['comment','no_of_likes']
+    
+    def no_of_likes(self,obj):
+        return obj.user.count()
+class DislikeAdmin(admin.ModelAdmin):
+    list_display=['comment','no_of_dislikes']
+    
+    def no_of_dislikes(self,obj):
+        return obj.user.count()
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Images)
 admin.site.register(ProductSpecification)
 admin.site.register(Comment, CommentAdmin)
-admin.site.register(Favorite)
-admin.site.register(Like)
-admin.site.register(Dislike)
+admin.site.register(Favorite, FavoriteAdmin)
+admin.site.register(Like,LikeAdmin)
+admin.site.register(Dislike, DislikeAdmin)

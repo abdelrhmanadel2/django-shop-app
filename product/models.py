@@ -90,12 +90,12 @@ class Product(models.Model):
 
 
 class Favorite(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.OneToOneField(Product, on_delete=models.CASCADE, related_name='favorite')
+    user = models.ManyToManyField(User,related_name='user_favorite', blank=True)
     isFavorite = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.user.username} fab {self.product.title}'
+        return f'{self.user.count()} fab {self.product.title}'
 
 
 class Images(models.Model):
@@ -217,7 +217,7 @@ class Comment(models.Model):
                 return str(years) + " years ago"
 class Like(models.Model):
     comment= models.OneToOneField(Comment,related_name='likes',on_delete=models.CASCADE)
-    user= models.ManyToManyField(User,related_name='user_likes', null=True)
+    user= models.ManyToManyField(User,related_name='user_likes', blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 
@@ -225,7 +225,7 @@ class Like(models.Model):
         return str(self.comment)
 class Dislike(models.Model):
     comment= models.OneToOneField(Comment,related_name='dislikes',on_delete=models.CASCADE)
-    user= models.ManyToManyField(User,related_name='user_dislikes',)
+    user= models.ManyToManyField(User,related_name='user_dislikes',blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 
