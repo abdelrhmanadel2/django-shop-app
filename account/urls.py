@@ -1,4 +1,5 @@
 from inspect import getcomments
+from order.views import addQuantity
 from .views import *
 from account.views import *
 from django.urls import path, include

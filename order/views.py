@@ -48,7 +48,21 @@ def addToCart(request):
 
     return Response({'message':'Something wrong'})
 
-         
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addQuantity(request):
+    user = request.user
+    cart_id = request.data['id']
+    quantity=request.data['quantity']
+    try:
+        cart = Cart.objects.get(pk=cart_id)
+        cart.quantity+=quantity
+        cart.save()
+        return Response({'message':"added successfully"})
+    except:
+        return Response({'message':"false"})
+
 
 
 @api_view(['POST'])

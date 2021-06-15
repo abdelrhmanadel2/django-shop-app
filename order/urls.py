@@ -4,6 +4,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('carts/', addToCart,name='addtocart'),
-    path('deletecart/', deleteCart, name='deleteCart')
-
+    path('deletecart/', deleteCart, name='deleteCart'),
+    path('add-quantity/',addQuantity,name='quantity'),
 ]
