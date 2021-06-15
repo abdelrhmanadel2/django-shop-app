@@ -58,7 +58,7 @@ def addQuantity(request):
 
     try:
         cart = Cart.objects.get(pk=cart_id)
-        cart.quantity+=int(quantity)
+        cart.quantity=int(quantity)
         cart.save()
         return Response({'message':"added successfully"})
     except:
