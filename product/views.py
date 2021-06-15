@@ -26,7 +26,6 @@ from django.conf import settings
 
 
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
 def getProducts(request):
     if request.method == 'GET':
         user=request.user
@@ -112,7 +111,7 @@ def categoryView(request):
 
 # GetProductComments
 @api_view(['GET','POST'])
-@permission_classes([IsAuthenticated]) 
+
 def productComments(request, id):
     user= request.user
     product= Product.objects.get(pk=id) 
@@ -127,12 +126,13 @@ def productComments(request, id):
 
         for comment in serializer.data:
             productComment= Comment.objects.get(pk=comment['id'])
+
             print(productComment)
             try:      
                 if request.user in productComment.likes.user.all():
                     comment['like']= True
                     comment['dislike']=False
-                elif request.user in productdislike.user.all():
+                elif request.user in productComment.dislikes.user.all():
                     comment['like']=False
                     comment['dislike']=True
                 else:
