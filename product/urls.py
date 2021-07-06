@@ -20,6 +20,7 @@ urlpatterns = [
     # path('<str:category_name>',categoryProducts )
     path('comments/<int:id>',productComments, name='comments'),
     path('like/',likeComment,name='like'),
-    path('dislike/',dislikedComment,name='dislike')
+    path('dislike/',dislikedComment,name='dislike'),
+    path('allcategory/',allCategory,name='all')
 
 ]

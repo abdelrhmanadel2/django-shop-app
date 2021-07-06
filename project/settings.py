@@ -37,19 +37,25 @@ ALLOWED_HOSTS=['*']
 
 AUTH_USER_MODEL ='account.User'
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
+DEFAULT_APPS=[
+     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
+
+THIRD_PARTY_APPS = [
     'rest_framework',
     'corsheaders',
     'product',
     'order',
     'account',
+    'social_auth',
 ]
+
+INSTALLED_APPS= DEFAULT_APPS+THIRD_PARTY_APPS
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

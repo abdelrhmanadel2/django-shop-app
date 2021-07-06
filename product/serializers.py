@@ -4,6 +4,7 @@ from account.models import User
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from .models import *
+from rest_framework_recursive.fields import RecursiveField
 
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,9 +29,14 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    # for nested Categories 
+    children=RecursiveField(many=True)
+
     class Meta:
         model= Category;
-        fields=['title']
+        fields=['title','children']
+       
+       
 
 
 class CommentSerializer(serializers.ModelSerializer):

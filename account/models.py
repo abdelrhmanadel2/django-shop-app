@@ -1,5 +1,5 @@
 # from sys import modules
-from django.db import models
+from django.db import  models
 
 # Create your models here.
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager, PermissionsMixin)
@@ -43,6 +43,9 @@ class UserManager(BaseUserManager):
         user = self.create_user(username,first_name, email, password, **other_fields)
         return user
 
+AUTH_PROVIDERS={'facebook':'facebook', 'google':'google','twitter':'twitter','email':'email'}
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     
     username=  models.CharField(max_length=255, unique=True, db_index=True)
@@ -54,6 +57,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    auth_provider=models.CharField(max_length=250,null=True,blank=True,default='email')
+
+
+    
 
     USERNAME_FIELD= 'email'
     REQUIRED_FIELDS= ['username', 'first_name']

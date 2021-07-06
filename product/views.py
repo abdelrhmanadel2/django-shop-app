@@ -96,6 +96,7 @@ def addFavorite(request):
 
 def categoryView(request):
     if request.method=='GET':
+        # for list of string  Eg. ['mobile', 'computer', 'electronics']
         category=Category.objects.values_list('title',flat=True)
        
 
@@ -231,4 +232,13 @@ def dislikedComment(request):
             return Response({"message":"new dislike created"})
     except Like.DoesNotExist:
         return Response({'error':'dislike does not exist'})
+
+
+@api_view(['GET'])
+
+def allCategory(request):
+    #Nested serializer
+    category= Category.objects.filter(parent__isnull=True)
+    serializers=CategorySerializer(category,many=True)
+    return Response(serializers.data)
 

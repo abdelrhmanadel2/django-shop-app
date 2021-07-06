@@ -9,7 +9,7 @@ class UserAdminConfig(BaseUserAdmin):
     search_fields=['email', 'username',]
     list_filter=('email','username','first_name',)
     ordering=('created_at',)
-    list_display =['email','username','first_name', 'is_active','is_staff','is_verified']
+    list_display =['email','username','first_name','auth_provider', 'is_active','is_staff','is_verified']
 
     fieldsets =(
         (None,{'fields':('email','username','first_name',)}),
@@ -19,7 +19,7 @@ class UserAdminConfig(BaseUserAdmin):
     )
     
     add_fieldsets = (
-        (None,{
+        ('Personal Data',{
             'classes':('wide',),
             'fields':('email','username','first_name','password1','password2',),   
         }),
