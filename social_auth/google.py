@@ -15,7 +15,7 @@ class Google:
             idinfo = id_token.verify_oauth2_token(
                 auth_token, requests.Request())
 
-            if idinfo['iss'] in ['https://accounts.google.com',]:
+            if 'https://accounts.google.com' in idinfo['iss']:
                 return idinfo
             
 
@@ -29,6 +29,6 @@ class Google:
     #     raise ValueError('Wrong hosted domain.')
 
     # ID token is valid. Get the user's Google Account ID from the decoded token.
-
+    
         except:
             return "The token is either invalid or has expired"

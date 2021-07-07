@@ -1,4 +1,6 @@
+from account.serializers import UserSerializer
 from django.contrib.auth import authenticate
+from rest_framework.serializers import Serializer
 from account.models import User
 import os
 import random
@@ -25,11 +27,10 @@ def register_social_user(provider, user_id, email, name, first_name):
 
             registered_user = authenticate(
                 email=email, password='ddd')
-
+            serializer=UserSerializer(registered_user,  many=False)
             return {
-                'username': registered_user.username,
-                'email': registered_user.email,
-                'token':str(AccessToken.for_user(registered_user))
+                'user': serializer.data,
+                'Token':str(AccessToken.for_user(registered_user))
 
                 }
 
@@ -49,4 +50,6 @@ def register_social_user(provider, user_id, email, name, first_name):
         # new_user = authenticate(
         #     email=email, password=os.environ.get('SOCIAL_SECRET'))
         return {
-            'success':True}
+            'user':UserSerializer(user,many=False).data,
+            'Token':str(AccessToken.for_user(user))
+            }
