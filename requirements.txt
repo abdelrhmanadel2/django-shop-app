@@ -14,4 +14,5 @@ google-auth-httplib2==0.1.0
 djangorestframework-recursive==0.1.2
 google-api-core==1.30.0
 google-api-python-client==2.11.0
+facebook-sdk==3.1.0
 
