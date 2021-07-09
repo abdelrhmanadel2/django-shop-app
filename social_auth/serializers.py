@@ -1,6 +1,7 @@
+from social_auth import facebook
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
-from . import google
+from . import google, facebook
 from .register import *
 
 class GoogleSocialAuthSerializer(serializers.Serializer):
@@ -29,3 +30,22 @@ class GoogleSocialAuthSerializer(serializers.Serializer):
 
         return register_social_user(
             provider=provider, user_id=user_id, email=email, name=name, first_name=first_name)
+
+
+class FacebookSerializer(serializers.Serializer):
+    auth_token=serializers.CharField()
+    
+    def validate_auth_token(self, auth_token):
+        print(auth_token)
+        user_data=facebook.Facebook.validate(auth_token)
+       
+        user_id = user_data['id']
+        email=user_data['email']
+        first_name=user_data['name']
+        name=user_data['name']
+        provider='facebook'
+        return register_social_user(
+
+        provider=provider, user_id=user_id, email=email, name=name, first_name=first_name)
+
+    

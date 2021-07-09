@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import googleSocialAuth
+from .views import facebookSocialAuth, googleSocialAuth
 
 urlpatterns = [
-    path('google/',googleSocialAuth)
+    path('google/',googleSocialAuth),
+    path('facebook/',facebookSocialAuth),
 ]

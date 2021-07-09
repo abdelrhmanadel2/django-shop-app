@@ -15,8 +15,8 @@ class Google:
             idinfo = id_token.verify_oauth2_token(
                 auth_token, requests.Request())
 
-            if 'https://accounts.google.com' in idinfo['iss']:
-                return idinfo
+            # if 'https://accounts.google.com' in idinfo['iss']:
+            return idinfo
             
 
                # Or, if multiple clients access the backend server:
