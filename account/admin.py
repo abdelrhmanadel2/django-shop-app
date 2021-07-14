@@ -1,8 +1,21 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User
+from rest_framework_simplejwt.token_blacklist import models
+from rest_framework_simplejwt.token_blacklist.admin import OutstandingTokenAdmin
 
-# Register your models here.
+ # Unregister default Outstandingtokan admin to permit delete user 
+
+class NewOutstandingTokenAdmin(OutstandingTokenAdmin):
+
+    def has_delete_permission(self, *args, **kwargs):
+        return True
+
+
+admin.site.unregister(models.OutstandingToken)
+admin.site.register(models.OutstandingToken, NewOutstandingTokenAdmin)
+
+# User admin model.
 
 class UserAdminConfig(BaseUserAdmin):
 
