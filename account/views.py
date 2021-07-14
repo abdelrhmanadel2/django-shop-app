@@ -177,9 +177,10 @@ class ForgetPassword(APIView):
 
         try:
             data = request.data 
-            user_obj=User.objects.get(email=data['email'])
+           
             if not User.objects.filter(email= data['email']).exists():
                 return Response({'message':'No user found'},status=status.HTTP_400_BAD_REQUEST)
+            user_obj=User.objects.get(email=data['email'])
             send_status =send_otp_to_email(data['email'],user_obj)
             if send_status:
 
