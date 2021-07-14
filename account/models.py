@@ -55,6 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_superuser=models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    otp=models.CharField(max_length=6,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     auth_provider=models.CharField(max_length=250,null=True,blank=True,default='email')

@@ -37,6 +37,7 @@ ALLOWED_HOSTS=['*']
 
 AUTH_USER_MODEL ='account.User'
 
+# Default apps given while create django Project
 DEFAULT_APPS=[
      'django.contrib.admin',
     'django.contrib.auth',
@@ -46,6 +47,8 @@ DEFAULT_APPS=[
     'django.contrib.staticfiles',
 ]
 
+
+# Third party apps which are installed outsite
 THIRD_PARTY_APPS = [
     'rest_framework',
     'corsheaders',
@@ -53,14 +56,33 @@ THIRD_PARTY_APPS = [
     'order',
     'account',
     'social_auth',
+    'rest_framework_simplejwt.token_blacklist',
 ]
+
+#  all Apps installed in project 
 
 INSTALLED_APPS= DEFAULT_APPS+THIRD_PARTY_APPS
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+
+    # Thottling for all anonomius and user 
+
+    # 'DEFAULT_THROTTLE_CLASSES': [
+    #     'rest_framework.throttling.AnonRateThrottle',
+    #     'rest_framework.throttling.UserRateThrottle'
+    # ],
+    
+
+
+    # To set limit of request  no of request/ (second,minute,,hour,day)
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10/minute',
+        'user': '1000/day'
+    },
+   
     
 }
 from datetime import timedelta
@@ -137,7 +159,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+    
 }
 
 
@@ -193,6 +216,13 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # MEDIA_ROOT = 'static/'
 
+CACHES={
+        'default':{
+            'BACKEND':'django.core.cache.backends.db.DatabaseCache',
+            'LOCATION':'otp_cache'
+        }
+}
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -201,5 +231,4 @@ EMAIL_HOST='smtp.gmail.com'
 EMAIL_PORT=587
 EMAIL_HOST_USER='testdjango102@gmail.com'
 EMAIL_HOST_PASSWORD='testDjango@102'
-
 

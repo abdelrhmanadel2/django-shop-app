@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from .serializers import *
 
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes, throttle_classes
 
 import jwt
 from django.conf import settings
@@ -38,17 +38,17 @@ def getProducts(request):
                 
                 
                 try:
-                    print('try')
+                    
                     if request.user in singleProduct.favorite.user.all():
                         product['favorite']=True
                         print('if')
                     else:
-                        print('else')
+                        
                         product['favorite']=False
                     data.append(product)
 
                 except:
-                     print('except')
+                
                      product['favorite']=False
                      data.append(product)
             

@@ -9,12 +9,12 @@ class UserAdminConfig(BaseUserAdmin):
     search_fields=['email', 'username',]
     list_filter=('email','username','first_name',)
     ordering=('created_at',)
-    list_display =['email','username','first_name','auth_provider', 'is_active','is_staff','is_verified']
+    list_display =['password','email','username','first_name','auth_provider', 'is_active','is_staff','is_verified']
 
     fieldsets =(
-        (None,{'fields':('email','username','first_name',)}),
+        (None,{'fields':('email','username','first_name','otp')}),
            
-        ('Permissions',{'fields':('is_staff','is_active', 'is_superuser')}),
+        ('Permissions',{'fields':('is_staff','is_active', 'is_superuser','is_verified')}),
        
     )
     

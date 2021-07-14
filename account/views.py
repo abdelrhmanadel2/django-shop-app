@@ -1,6 +1,6 @@
 
-from django.core.checks import messages
-import product
+from django.db.models.fields import EmailField
+from account.helpers import send_otp_to_email
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -18,10 +18,13 @@ from django.urls import reverse
 from .models import *
 from .serializers import *
 
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes, throttle_classes
 
 import jwt
 from django.conf import settings
+from rest_framework.views import APIView
+from  rest_framework.throttling import AnonRateThrottle
+
 
 @api_view(['POST'])
 def register(request):
@@ -39,7 +42,7 @@ def register(request):
 
         absurl ='http://'+current_site+relativeLink+"?token="+str(token)
         email_body= 'Hi'+user.username+' Use link below to verify your email\n '+ absurl
-        data ={'email_body':email_body, 'email_subject':'Verify your email', 'email_to':user.email}
+        data ={'email_body':email_body, 'email_subject':'Verify your email ', 'email_to':user.email}
         Utils.send_email(data)
 
 
@@ -65,6 +68,34 @@ def verifyEmail(request):
             user.save()
         
         return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
+    except jwt.ExpiredSignatureError as e:
+        return Response({'error': 'Activations link expired'}, status=status.HTTP_400_BAD_REQUEST)
+    except jwt.exceptions.DecodeError as e:
+        return Response({'error': 'Invalid Token'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@throttle_classes([AnonRateThrottle])
+def changePassword(request):   
+    token= request.GET.get('token')
+    data= request.data
+
+    try: 
+        # We can not expire any refresh or access token so for logout or expire
+        # we need to add token to blacklist so with it can not accessible 
+
+        refresh_token=RefreshToken(token)
+        refresh_token.blacklist()
+    except:
+        return Response ({"message":"Link is expired"},status=status.HTTP_400_BAD_REQUEST)
+  
+    try:
+        payload = jwt.decode(jwt=token, key=settings.SECRET_KEY, algorithms=['HS256'])
+       
+        user = User.objects.get(id=payload['user_id'])
+        user.set_password(data['new_password'])
+        user.save()
+        
+        return Response({'message': 'password successfully reset'}, status=status.HTTP_200_OK)
     except jwt.ExpiredSignatureError as e:
         return Response({'error': 'Activations link expired'}, status=status.HTTP_400_BAD_REQUEST)
     except jwt.exceptions.DecodeError as e:
@@ -115,3 +146,55 @@ def getUser(request):
     user = User.objects.all()
     serializer = UserSerializer(user, many=True)
     return Response(serializer.data)
+
+
+class ForgetPassword(APIView):
+
+    def post(self,request):
+        try:
+            data = request.data
+            user_obj=User.objects.get(email=data['email'])
+            otp=data['otp']
+
+            if user_obj.otp==otp:
+                token=RefreshToken.for_user(user_obj)
+                current_site= get_current_site(request).domain
+                relativeLink=reverse('change-password')
+
+                reset_link='http://'+current_site+relativeLink+"?token="+str(token)
+                user_obj.otp=5555
+                user_obj.save()
+               
+
+                return Response({'reset_link':reset_link},status=status.HTTP_200_OK)
+            return Response({'message':'wrong code'},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(e)
+        return Response({'error':'Something Wrong'}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    def patch(self, request):
+
+        try:
+            data = request.data 
+            user_obj=User.objects.get(email=data['email'])
+            if not User.objects.filter(email= data['email']).exists():
+                return Response({'message':'No user found'},status=status.HTTP_400_BAD_REQUEST)
+            send_status =send_otp_to_email(data['email'],user_obj)
+            if send_status:
+
+                validation_code=user_obj.otp
+                print(validation_code)
+
+                data={'email_body':str(validation_code),'email_subject':'Use this code for Password reset','email_to':user_obj.email}
+                Utils.send_email(data)
+                return Response({'message':'New otp send', },status=status.HTTP_201_CREATED)
+            else: 
+                return Response({'message':'Try after few Seconds'}, status= status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            print(e)
+        return Response({'error':'Something Wrong'}, status=status.HTTP_400_BAD_REQUEST)
+      
+
+
