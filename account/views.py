@@ -195,7 +195,8 @@ class ForgetPassword(APIView):
 
         except Exception as e:
             print(e)
-        return Response({'error':'Something Wrong'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            return Response({'error':'Something Wrong'}, status=status.HTTP_400_BAD_REQUEST)
       
 
 
