@@ -28,7 +28,7 @@ SECRET_KEY = '%_&-bs77)dzmoezw88m#+-ra#g1=c*mg)xg+l1$0_x-r)9bz)q'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # ALLOWED_HOSTS = ["onlinehatiya.herokuapp.com", "localhost"]
 ALLOWED_HOSTS=['*']

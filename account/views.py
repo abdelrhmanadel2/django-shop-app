@@ -175,28 +175,29 @@ class ForgetPassword(APIView):
 
     def patch(self, request):
 
-        try:
-            data = request.data 
-           
-            if not User.objects.filter(email= data['email']).exists():
-                return Response({'message':'No user found'},status=status.HTTP_400_BAD_REQUEST)
-            user_obj=User.objects.get(email=data['email'])
-            send_status =send_otp_to_email(data['email'],user_obj)
-            if send_status:
 
-                validation_code=user_obj.otp
-                print(validation_code)
+        # try:
+        data = request.data 
+        
+        if not User.objects.filter(email= data['email']).exists():
+            return Response({'message':'No user found'},status=status.HTTP_400_BAD_REQUEST)
+        user_obj=User.objects.get(email=data['email'])
+        send_status =send_otp_to_email(data['email'],user_obj)
+        if send_status:
 
-                data={'email_body':str(validation_code),'email_subject':'Use this code for Password reset','email_to':user_obj.email}
-                Utils.send_email(data)
-                return Response({'message':'New otp send', },status=status.HTTP_201_CREATED)
-            else: 
-                return Response({'message':'Try after few Seconds'}, status= status.HTTP_400_BAD_REQUEST)
+            validation_code=user_obj.otp
+            print(validation_code)
 
-        except Exception as e:
-            print(e)
+            data={'email_body':str(validation_code),'email_subject':'Use this code for Password reset','email_to':user_obj.email}
+            Utils.send_email(data)
+            return Response({'message':'New otp send', },status=status.HTTP_201_CREATED)
+        else: 
+            return Response({'message':'Try after few Seconds'}, status= status.HTTP_400_BAD_REQUEST)
+
+        # except Exception as e:
+        #     print(e)
             
-            return Response({'error':'Something Wrong'}, status=status.HTTP_400_BAD_REQUEST)
+        #     return Response({'error':'Something Wrong'}, status=status.HTTP_400_BAD_REQUEST)
       
 
 
