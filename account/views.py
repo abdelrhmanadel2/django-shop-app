@@ -158,15 +158,15 @@ class ForgetPassword(APIView):
 
             if user_obj.otp==otp:
                 token=RefreshToken.for_user(user_obj)
-                current_site= get_current_site(request).domain
-                relativeLink=reverse('change-password')
+                # current_site= get_current_site(request).domain
+                # relativeLink=reverse('change-password')
 
-                reset_link='http://'+current_site+relativeLink+"?token="+str(token)
+                # reset_link='http://'+current_site+relativeLink+"?token="+str(token)
                 user_obj.otp=5555
                 user_obj.save()
                
 
-                return Response({'reset_link':reset_link},status=status.HTTP_200_OK)
+                return Response({'token':str(token)},status=status.HTTP_200_OK)
             return Response({'message':'wrong code'},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             print(e)
