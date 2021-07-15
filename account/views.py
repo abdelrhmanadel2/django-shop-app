@@ -24,7 +24,7 @@ import jwt
 from django.conf import settings
 from rest_framework.views import APIView
 from  rest_framework.throttling import AnonRateThrottle
-
+from django.views.decorators.csrf import csrf_exempt
 
 @api_view(['POST'])
 def register(request):
@@ -72,7 +72,7 @@ def verifyEmail(request):
         return Response({'error': 'Activations link expired'}, status=status.HTTP_400_BAD_REQUEST)
     except jwt.exceptions.DecodeError as e:
         return Response({'error': 'Invalid Token'}, status=status.HTTP_400_BAD_REQUEST)
-
+@csrf_exempt
 @api_view(['POST'])
 @throttle_classes([AnonRateThrottle])
 def changePassword(request):   
