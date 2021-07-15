@@ -94,8 +94,12 @@ def changePassword(request):
         user = User.objects.get(id=payload['user_id'])
         user.set_password(data['new_password'])
         user.save()
+        serializer= UserSerializer(user, many=False) 
         
-        return Response({'message': 'password successfully reset'}, status=status.HTTP_200_OK)
+        return Response({
+            "user": serializer.data,
+            "Token": str(token)
+        })
     except jwt.ExpiredSignatureError as e:
         return Response({'error': 'Activations link expired'}, status=status.HTTP_400_BAD_REQUEST)
     except jwt.exceptions.DecodeError as e:
