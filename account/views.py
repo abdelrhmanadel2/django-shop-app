@@ -43,7 +43,7 @@ def register(request):
         absurl ='http://'+current_site+relativeLink+"?token="+str(token)
         email_body= 'Hi'+user.username+' Use link below to verify your email\n '+ absurl
         data ={'email_body':email_body, 'email_subject':'Verify your email ', 'email_to':user.email}
-        Utils.send_email(data)
+        # Utils.send_email(data)
 
 
 
