@@ -24,7 +24,7 @@ import jwt
 from django.conf import settings
 from rest_framework.views import APIView
 from  rest_framework.throttling import AnonRateThrottle
-from django.views.decorators.csrf import csrf_exempt
+
 
 @api_view(['POST'])
 def register(request):
@@ -75,7 +75,7 @@ def verifyEmail(request):
 
 @api_view(['POST'])
 @throttle_classes([AnonRateThrottle])
-@csrf_exempt
+
 def changePassword(request):   
     token= request.GET.get('token')
     data= request.data
@@ -96,10 +96,11 @@ def changePassword(request):
         user.set_password(data['new_password'])
         user.save()
         serializer= UserSerializer(user, many=False) 
+        newToken= AccessToken.for_user(user)
         
         return Response({
             "user": serializer.data,
-            "Token": str(token)
+            "Token": str(newToken)
         })
     except jwt.ExpiredSignatureError as e:
         return Response({'error': 'Activations link expired'}, status=status.HTTP_400_BAD_REQUEST)
