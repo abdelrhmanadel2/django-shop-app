@@ -4,7 +4,7 @@ from .models import User
 from rest_framework_simplejwt.token_blacklist import models
 from rest_framework_simplejwt.token_blacklist.admin import OutstandingTokenAdmin
 
- # Unregister default Outstandingtokan admin to permit delete user 
+ # Unregister default Outstandingtoken admin to permit delete user 
 
 class NewOutstandingTokenAdmin(OutstandingTokenAdmin):
 

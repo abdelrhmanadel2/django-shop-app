@@ -72,9 +72,10 @@ def verifyEmail(request):
         return Response({'error': 'Activations link expired'}, status=status.HTTP_400_BAD_REQUEST)
     except jwt.exceptions.DecodeError as e:
         return Response({'error': 'Invalid Token'}, status=status.HTTP_400_BAD_REQUEST)
-@csrf_exempt
+
 @api_view(['POST'])
 @throttle_classes([AnonRateThrottle])
+@csrf_exempt
 def changePassword(request):   
     token= request.GET.get('token')
     data= request.data
