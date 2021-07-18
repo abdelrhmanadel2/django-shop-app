@@ -82,10 +82,21 @@ REST_FRAMEWORK = {
         'anon': '10/minute',
         'user': '1000/day'
     },
+
+
+
+    # Disable the Browsable API!
+    # For Production Only
+
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
    
     
 }
 from datetime import timedelta
+
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
@@ -216,6 +227,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # MEDIA_ROOT = 'static/'
 
+
+# Cache table Setup
 CACHES={
         'default':{
             'BACKEND':'django.core.cache.backends.db.DatabaseCache',
@@ -224,6 +237,7 @@ CACHES={
 }
 
 
+# Sending SMS Setup
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS= True
