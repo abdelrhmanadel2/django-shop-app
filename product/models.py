@@ -126,9 +126,7 @@ class Comment(models.Model):
 
     @property
     def get_total_likes(self):
-        
         likes=self.likes.user.count()
-
         getLikes=0
         if likes is not None:
             getLikes=likes
