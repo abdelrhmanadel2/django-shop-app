@@ -4,7 +4,8 @@ from .models import User
 from rest_framework_simplejwt.token_blacklist import models
 from rest_framework_simplejwt.token_blacklist.admin import OutstandingTokenAdmin
 
- # Unregister default Outstandingtoken admin to permit delete user 
+# Unregister default Outstandingtoken admin to permit delete user
+
 
 class NewOutstandingTokenAdmin(OutstandingTokenAdmin):
 
@@ -17,29 +18,30 @@ admin.site.register(models.OutstandingToken, NewOutstandingTokenAdmin)
 
 # User admin model.
 
+
 class UserAdminConfig(BaseUserAdmin):
 
-    search_fields=['email', 'username',]
-    list_filter=('email','username','first_name',)
-    ordering=('created_at',)
-    list_display =['password','email','username','first_name','auth_provider', 'is_active','is_staff','is_verified']
+    search_fields = ['email', 'username', ]
+    list_filter = ('is_superuser',)
+    ordering = ('created_at',)
+    list_display = ['password', 'email', 'username', 'first_name',
+                    'auth_provider', 'is_active', 'is_staff', 'is_verified']
 
-    fieldsets =(
-        (None,{'fields':('email','username','first_name','otp')}),
-           
-        ('Permissions',{'fields':('is_staff','is_active', 'is_superuser','is_verified')}),
-       
+    fieldsets = (
+        (None, {'fields': ('email', 'username', 'first_name', 'otp')}),
+
+        ('Permissions', {'fields': ('is_staff',
+         'is_active', 'is_superuser', 'is_verified')}),
+
     )
-    
+
     add_fieldsets = (
-        ('Personal Data',{
-            'classes':('wide',),
-            'fields':('email','username','first_name','password1','password2',),   
+        ('Personal Data', {
+            'classes': ('wide',),
+            'fields': ('email', 'username', 'first_name', 'password1', 'password2',),
         }),
-         ('Permissions',{'fields':('is_staff','is_active','is_superuser')})
+        ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser')})
     )
-    
 
 
 admin.site.register(User, UserAdminConfig)
-

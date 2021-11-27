@@ -4,45 +4,47 @@ from account.models import User
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from .models import *
-from rest_framework_recursive.fields import RecursiveField
+# from rest_framework_recursive.fields import RecursiveField
+
 
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
-        fields= ['image']
+        fields = ['image']
 
 
 class ProductSpecificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductSpecification
-        fields= ['point']
+        fields = ['point']
+
 
 class ProductSerializer(serializers.ModelSerializer):
-    images= ImageSerializer(many=True,read_only=True)
-    productSpecification= ProductSpecificationSerializer(many=True)
+    images = ImageSerializer(many=True, read_only=True)
+    productSpecification = ProductSpecificationSerializer(many=True)
+
     class Meta:
         model = Product
-        fields = ['id',  'title','keywords','description','image','price','slug','category','avaragereview',
-        'no_of_reviews','images','productSpecification'
-    ]
+        fields = ['id',  'title', 'keywords', 'description', 'image', 'price', 'slug', 'category', 'avaragereview',
+                  'no_of_reviews', 'images', 'productSpecification'
+                  ]
 
 
+# class CategorySerializer(serializers.ModelSerializer):
+#     # for nested Categories
+#     children=RecursiveField(many=True)
 
-class CategorySerializer(serializers.ModelSerializer):
-    # for nested Categories 
-    children=RecursiveField(many=True)
-
-    class Meta:
-        model= Category;
-        fields=['title','children']
-       
-       
+#     class Meta:
+#         model= Category;
+#         fields=['title','children']
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user= MinUserDataSerializer(many=False)
+    user = MinUserDataSerializer(many=False)
+
     class Meta:
         model = Comment
 
-        fields=['id','user','comment','rate','get_total_likes', 'get_total_dislikes','whenpublished']
-        depth=1
+        fields = ['id', 'user', 'comment', 'rate',
+                  'get_total_likes', 'get_total_dislikes', 'whenpublished']
+        depth = 1

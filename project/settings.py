@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import os
 
@@ -31,15 +32,15 @@ SECRET_KEY = '%_&-bs77)dzmoezw88m#+-ra#g1=c*mg)xg+l1$0_x-r)9bz)q'
 DEBUG = True
 
 # ALLOWED_HOSTS = ["onlinehatiya.herokuapp.com", "localhost"]
-ALLOWED_HOSTS=['*']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
-AUTH_USER_MODEL ='account.User'
+AUTH_USER_MODEL = 'account.User'
 
 # Default apps given while create django Project
-DEFAULT_APPS=[
-     'django.contrib.admin',
+DEFAULT_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -59,22 +60,22 @@ THIRD_PARTY_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 ]
 
-#  all Apps installed in project 
+#  all Apps installed in project
 
-INSTALLED_APPS= DEFAULT_APPS+THIRD_PARTY_APPS
+INSTALLED_APPS = DEFAULT_APPS+THIRD_PARTY_APPS
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 
-    # Thottling for all anonomius and user 
+    # Thottling for all anonomius and user
 
     # 'DEFAULT_THROTTLE_CLASSES': [
     #     'rest_framework.throttling.AnonRateThrottle',
     #     'rest_framework.throttling.UserRateThrottle'
     # ],
-    
+
 
 
     # To set limit of request  no of request/ (second,minute,,hour,day)
@@ -91,10 +92,9 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     )
-   
-    
+
+
 }
-from datetime import timedelta
 
 
 SIMPLE_JWT = {
@@ -105,7 +105,7 @@ SIMPLE_JWT = {
     'UPDATE_LAST_LOGIN': False,
 
     'ALGORITHM': 'HS256',
-   
+
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
     'ISSUER': None,
@@ -125,7 +125,6 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
-
 
 
 MIDDLEWARE = [
@@ -171,7 +170,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
-    
+
 }
 
 
@@ -229,20 +228,19 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Cache table Setup
-CACHES={
-        'default':{
-            'BACKEND':'django.core.cache.backends.db.DatabaseCache',
-            'LOCATION':'otp_cache'
-        }
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'otp_cache'
+    }
 }
 
 
 # Sending SMS Setup
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS= True
-EMAIL_HOST='smtp.gmail.com'
-EMAIL_PORT=587
-EMAIL_HOST_USER='testdjango102@gmail.com'
-EMAIL_HOST_PASSWORD='djangoPro@1'
-
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'testdjango102@gmail.com'
+EMAIL_HOST_PASSWORD = 'djangoPro@1'

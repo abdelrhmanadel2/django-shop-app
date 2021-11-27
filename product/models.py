@@ -101,6 +101,7 @@ class Favorite(models.Model):
 class Images(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name='images')
     title = models.CharField(max_length=30)
+    #  image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True)
     image = models.ImageField(blank=True, upload_to='images/', )
 
     def __str__(self):

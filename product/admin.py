@@ -26,8 +26,11 @@ class ProductSpecificationsInline(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id','title', 'price',  'image_tag', 'category', 'status']
     list_filter = ['category']
+    
+      # to show many image fields in product table 
     inlines = [ProductImageInline, ProductSpecificationsInline]
-    # to view image in admin panel
+  
+    # to Autofield function 
     prepopulated_fields = {'slug': ('title',)}
 
     def image_tag(self, obj):
